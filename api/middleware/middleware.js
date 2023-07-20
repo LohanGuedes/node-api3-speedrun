@@ -1,7 +1,7 @@
 const db = require("../users/users-model");
 
 function logger(req, res, next) {
-  console.log(`${req.method} ${req.url} ${Date.now()}`);
+  console.log(`[${req.method}] ${req.url} ${Date.now()}`);
   next();
 }
 
@@ -20,15 +20,6 @@ async function validateUserId(req, res, next) {
 }
 
 function validateUser(req, res, next) {
-  if (
-    req.method === "GET" ||
-    req.method === "DELETE" ||
-    req.url.includes("posts", 0)
-  ) {
-    next();
-    return;
-  }
-
   const body = req.body;
   if (!body || !body.name) {
     res.status(400);
@@ -40,10 +31,6 @@ function validateUser(req, res, next) {
 }
 
 function validatePost(req, res, next) {
-  if (req.method === "GET") {
-    next();
-    return;
-  }
   const body = req.body;
   if (!body || !body.text) {
     res.status(400);
