@@ -11,6 +11,7 @@ async function validateUserId(req, res, next) {
     if (!user) {
       res.status(404);
       res.json({ message: "user not found" });
+      return;
     }
   } catch (error) {
     console.log(error);
@@ -19,8 +20,11 @@ async function validateUserId(req, res, next) {
 }
 
 function validateUser(req, res, next) {
-  console.log(req);
-  if (req.method == "GET") {
+  if (
+    req.method === "GET" ||
+    req.method === "DELETE" ||
+    req.url.includes("posts", 0)
+  ) {
     next();
     return;
   }
@@ -29,16 +33,22 @@ function validateUser(req, res, next) {
   if (!body || !body.name) {
     res.status(400);
     res.json({ message: "missing required name field" });
+    return;
   }
 
   next();
 }
 
 function validatePost(req, res, next) {
+  if (req.method === "GET") {
+    next();
+    return;
+  }
   const body = req.body;
-  if (!body) {
+  if (!body || !body.text) {
     res.status(400);
     res.json({ message: "missing required text field" });
+    return;
   }
   next();
 }
